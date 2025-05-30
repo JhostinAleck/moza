@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="heart.ico">
+    <title>Para Moza Alli ❤️</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Lightbox CSS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 2) Then Lightbox CSS & JS -->
+    <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css"
+    rel="stylesheet">
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Treasure Modal Overlay */
+        .treasure-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: all 1s ease-in-out;
+        }
+
+        .treasure-overlay.opened {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8);
+        }
+
+        .treasure-chest {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .treasure-chest:hover {
+            transform: scale(1.05);
+        }
+
+        .chest-bottom {
+            width: 300px;
+            height: 120px;
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #8B4513 100%);
+            border-radius: 20px 20px 15px 15px;
+            position: absolute;
+            bottom: 0;
+            box-shadow: 
+                inset 0 10px 20px rgba(139, 69, 19, 0.8),
+                inset 0 -10px 20px rgba(101, 67, 33, 0.8),
+                0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .chest-top {
+            width: 300px;
+            height: 100px;
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #8B4513 100%);
+            border-radius: 20px 20px 5px 5px;
+            position: absolute;
+            top: 0;
+            transform-origin: bottom center;
+            transition: transform 0.8s ease-in-out;
+            box-shadow: 
+                inset 0 10px 20px rgba(139, 69, 19, 0.8),
+                inset 0 -5px 15px rgba(101, 67, 33, 0.8),
+                0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .chest-top.opening {
+            transform: rotateX(-120deg);
+        }
+
+        .chest-lock {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 50px;
+            background: linear-gradient(45deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 5px;
+            box-shadow: 
+                inset 0 5px 10px rgba(255, 215, 0, 0.8),
+                inset 0 -5px 10px rgba(255, 140, 0, 0.8),
+                0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .chest-keyhole {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: #333;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        }
+
+        .treasure-glow {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255,215,0,0.8) 0%, rgba(255,215,0,0.4) 30%, transparent 70%);
+            border-radius: 50%;
+            transition: all 0.8s ease-in-out;
+            opacity: 0;
+        }
+
+        .treasure-glow.active {
+            width: 400px;
+            height: 400px;
+            opacity: 1;
+            animation: treasureGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes treasureGlow {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        .treasure-text {
+            position: flex;
+            top: -80px;
+            left: 50%;
+            justify-content: center;
+            align-items: center;
+            color: #FFD700;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-align: center;
+            animation: treasureText 2s ease-in-out infinite alternate;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1cm;
+        }
+
+        @keyframes treasureText {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Main content (initially hidden) */
+        .main-content {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 1s ease-in-out 0.5s;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .section {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Countdown Section */
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .countdown-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .countdown-card h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .countdown-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffeb3b;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .messages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .message-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .message-card:hover {
+            transform: scale(1.05);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .message-card.revealed {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .message-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Love Letter Section */
+        .letter-container {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        .letter-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4em;
+            line-height: 1.6;
+            color: #333;
+            position: relative;
+            z-index: 2;
+        }
+
+        .typewriter {
+            overflow: hidden;
+            border-right: 3px solid #ff6b6b;
+            white-space: nowrap;
+            margin: 0 auto;
+            animation: typing 4s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #ff6b6b }
+        }
+
+        /* Improved Photo Gallery */
+        .gallery-section {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        .gallery-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .gallery-title h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .gallery-subtitle {
+            font-size: 1.1em;
+            color: #666;
+            font-weight: 300;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .photo-item {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: revealPhoto 0.8s ease-out forwards;
+        }
+
+        .photo-item:nth-child(1) { animation-delay: 0.2s; }
+        .photo-item:nth-child(2) { animation-delay: 0.4s; }
+        .photo-item:nth-child(3) { animation-delay: 0.6s; }
+        .photo-item:nth-child(4) { animation-delay: 0.8s; }
+
+        .photo-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        @keyframes revealPhoto {
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .photo-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+        }
+
+        .photo-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .photo-wrapper:hover img {
+            transform: scale(1.05);
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,105,180,0.3), rgba(255,20,147,0.3));
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+            cursor: pointer;
+        }
+
+        .photo-wrapper:hover .photo-overlay {
+            opacity: 1;
+        }
+
+        .photo-content {
+            color: #333;
+        }
+
+        .photo-icon {
+            font-size: 2.5em;
+            color: #ff6b9d;
+            margin-bottom: 15px;
+        }
+
+        .photo-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .photo-description {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Placeholder for missing images */
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Garden Section */
+        .garden-container {
+            background: linear-gradient(to bottom, #87CEEB 0%, #98FB98 100%);
+            border-radius: 15px;
+            padding: 40px;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .garden-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .flower {
+            width: 60px;
+            height: 80px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .flower:hover {
+            transform: scale(1.2);
+        }
+
+        .flower-bloom {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff6b9d 0%, #c44569 100%);
+            margin: 0 auto 10px;
+            position: relative;
+            animation: bloom 2s ease-in-out infinite alternate;
+        }
+
+        .flower-bloom::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,107,157,0.3) 0%, transparent 70%);
+        }
+
+        .flower-stem {
+            width: 4px;
+            height: 40px;
+            background: #4CAF50;
+            margin: 0 auto;
+            border-radius: 2px;
+        }
+
+        @keyframes bloom {
+            0% { transform: scale(0.8); }
+            100% { transform: scale(1.1); }
+        }
+
+        .flower-tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            max-width: 200px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .flower-tooltip.show {
+            opacity: 1;
+        }
+
+        /* Floating Hearts */
+        .heart {
+            position: fixed;
+            color: #ff6b6b;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 1000;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(50vh) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Music Controls */
+        .music-modal {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            padding: 20px 24px 16px 24px;
+            z-index: 1001;
+            min-width: 320px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .music-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .music-modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.3em;
+            cursor: pointer;
+        }
+
+        .music-modal-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .music-modal-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .music-modal-btn:hover {
+            background: rgba(255,255,255,0.35);
+        }
+
+        #musicProgress {
+            flex: 1;
+        }
+
+        .music-modal-volume {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #musicVolume {
+            width: 100px;
+        }
+
+        /* Lightbox customization */
+        .lb-data .lb-caption {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.2em;
+            color: #fff;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .navigation {
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+
+            .letter-container, .gallery-section {
+                padding: 25px;
+            }
+
+            .gallery-title h3 {
+                font-size: 2em;
+            }
+
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .garden-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .treasure-chest {
+                width: 250px;
+                height: 170px;
+            }
+
+            .chest-bottom {
+                width: 250px;
+                height: 100px;
+            }
+
+            .chest-top {
+                width: 250px;
+                height: 85px;
+            }
+
+            .music-modal { 
+                min-width: 220px; 
+                padding: 12px;
+                right: 15px;
+                bottom: 15px;
+            }
+            
+            #musicVolume { 
+                width: 60px; 
+            }
+        }
+
+        @media (max-width: 480px) {
+            .photo-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-title h3 {
+                font-size: 1.8em;
+            }
+
+            .photo-item {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Treasure Chest Overlay -->
+    <div class="treasure-overlay" id="treasureOverlay">
+        <div class="treasure-text">
+            ✨ Haz click para abrir tu regalo especial ✨<br>
+            <small style="font-size: 0.7em; opacity: 0.8;">Tu tesoro de amor te está esperando...</small>
+        </div>
+        <div class="treasure-chest" id="treasureChest">
+            <div class="treasure-glow" id="treasureGlow"></div>
+            <div class="chest-bottom"></div>
+            <div class="chest-top" id="chestTop">
+                <div class="chest-lock">
+                    <div class="chest-keyhole"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <div class="header">
+                <h1>Para mi amor Moza Alli ❤️</h1>
+                <p>El regalo más especial para la persona más especial</p>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn active" data-section="countdown">Cuenta Regresiva</button>
+                <button class="nav-btn" data-section="letter">Carta de Amor</button>
+                <button class="nav-btn" data-section="garden">Jardín de Nuestro Amor</button>
+            </div>
+
+            <!-- Countdown Section -->
+            <div class="section active" id="countdown">
+                <div class="countdown-grid">
+                    <div class="countdown-card">
+                        <h3>🎂 Tu Cumpleaños #20</h3>
+                        <div class="countdown-display" id="birthdayCountdown">
+                            <div>¡Ya es tu cumpleaños! 🎉</div>
+                        </div>
+                    </div>
+                    <div class="countdown-card">
+                        <h3>💕 Nuestro 7mo Mes</h3>
+                        <div class="countdown-display" id="anniversaryCountdown">
+                            <div>¡Ya cumplimos 7 meses! 💕</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="color: white; text-align: center; margin-bottom: 20px; font-family: 'Dancing Script', cursive; font-size: 1.8em;">
+                    Mensajes Especiales para Ti
+                </h3>
+                <p style="color: rgba(255,255,255,0.8); text-align: center; margin-bottom: 20px;">
+                    20 mensajes por tus 20 años + 7 mensajes por nuestros 7 meses de amor
+                </p>
+
+                <div class="messages-grid" id="messagesGrid">
+                    <!-- Messages will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Love Letter Section -->
+            <div class="section" id="letter">
+                <div class="letter-container">
+                    <div class="letter-text" id="letterText">
+                        <!-- Letter will be typed here -->
+                    </div>
+                </div>
+
+                <!-- Improved Photo Gallery -->
+                <div class="gallery-section">
+                    <div class="gallery-title">
+                        <h3>Nuestros Momentos Especiales</h3>
+                        <p class="gallery-subtitle">Cada imagen cuenta una historia de nuestro amor</p>
+                    </div>
+
+                    <div class="photo-gallery">
+                        <div class="photo-item">
+                            <div class="photo-wrapper">
+                                <a href="kiss.jpg" data-lightbox="love-gallery" data-title="Nuestros besos - Los momentos más dulces que compartimos juntos ❤️">
+                                    <img src="kiss.jpg" alt="Nuestros besos" onerror="this.parentElement.innerHTML='<div class=photo-placeholder>💋<br>Nuestros Besos<br><small>Imagen por cargar</small></div>'">
+                                    <div class="photo-overlay">
+                                        <i class="fas fa-search-plus"></i>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="photo-content">
+                                <div class="photo-icon">💋</div>
+                                <div class="photo-title">Nuestros Besos</div>
+                                <div class="photo-description">Los momentos más dulces que compartimos, cuando nuestros labios se encuentran y el mundo desaparece.</div>
+                            </div>
+                        </div>
+
+                        <div class="photo-item">
+                            <div class="photo-wrapper">
+                                <a href="smile.jpg" data-lightbox="love-gallery" data-title="Tu sonrisa - La luz que ilumina todos mis días y mi razón para ser feliz 😊">
+                                    <img src="smile.jpg" alt="Tu sonrisa" onerror="this.parentElement.innerHTML='<div class=photo-placeholder>😊<br>Tu Sonrisa<br><small>Imagen por cargar</small></div>'">
+                                    <div class="photo-overlay">
+                                        <i class="fas fa-search-plus"></i>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="photo-content">
+                                <div class="photo-icon">😊</div>
+                                <div class="photo-title">Tu Sonrisa Radiante</div>
+                                <div class="photo-description">Esa sonrisa que me enamora cada día, que ilumina mi mundo y hace que todo valga la pena.</div>
+                            </div>
+                        </div>
+
+                        <div class="photo-item">
+                            <div class="photo-wrapper">
+                                <a href="sleep.jpg" data-lightbox="love-gallery" data-title="Durmiendo juntos - Los momentos de paz y tranquilidad en tus brazos 🌙">
+                                    <img src="sleep.jpg" alt="Durmiendo juntos" onerror="this.parentElement.innerHTML='<div class=photo-placeholder>🌙<br>Durmiendo Juntos<br><small>Imagen por cargar</small></div>'">
+                                    <div class="photo-overlay">
+                                        <i class="fas fa-search-plus"></i>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="photo-content">
+                                <div class="photo-icon">🌙</div>
+                                <div class="photo-title">Noches de Amor</div>
+                                <div class="photo-description">Cuando dormimos juntos y siento la paz más profunda, protegida entre tus brazos.</div>
+                            </div>
+                        </div>
+
+                        <div class="photo-item">
+                            <div class="photo-wrapper">
+                                <a href="fun.jpg" data-lightbox="love-gallery" data-title="Momentos divertidos - Cuando me haces reír y siento que puedo ser yo mismo 😄">
+                                    <img src="fun.jpg" alt="Momentos divertidos" onerror="this.parentElement.innerHTML='<div class=photo-placeholder>😄<br>Momentos Divertidos<br><small>Imagen por cargar</small></div>'">
+                                    <div class="photo-overlay">
+                                        <i class="fas fa-search-plus"></i>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="photo-content">
+                                <div class="photo-icon">😄</div>
+                                <div class="photo-title">Risas y Diversión</div>
+                                <div class="photo-description">Esos momentos únicos cuando me haces reír hasta que me duele el estómago. Pura felicidad.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Garden Section -->
+            <div class="section" id="garden">
+                <h3 style="text-align: center; margin-bottom: 30px; color: #2c3e50; font-family: 'Dancing Script', cursive; font-size: 2em;">
+                    El Jardín de Nuestros 7 Meses 🌸
+                </h3>
+                <p style="text-align: center; margin-bottom: 30px; color: #34495e;">
+                    Cada flor representa un mes de nuestro amor. Haz clic en cada una para ver nuestros recuerdos especiales.
+                </p>
+
+                <div class="garden-container">
+                    <div class="garden-grid" id="gardenGrid">
+                        <!-- Flowers will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip for flowers -->
+    <div class="flower-tooltip" id="flowerTooltip"></div>
+
+    <!-- Mini modal de control de música -->
+    <div id="musicModal" class="music-modal" style="display: none;">
+        <div class="music-modal-header">
+            <span>🎵 love.mp3</span>
+            <button id="closeMusicModal" class="music-modal-close">&times;</button>
+        </div>
+        <div class="music-modal-controls">
+            <button id="musicPlayPause" class="music-modal-btn"><i class="fas fa-play"></i></button>
+            <input type="range" id="musicProgress" min="0" max="100" value="0" step="1">
+            <span id="musicCurrent">0:00</span> / <span id="musicDuration">0:00</span>
+        </div>
+        <div class="music-modal-volume">
+            <i class="fas fa-volume-up"></i>
+            <input type="range" id="musicVolume" min="0" max="1" step="0.01" value="0.7">
+        </div>
+    </div>
+
+    <!-- Elemento de audio oculto -->
+    <audio id="backgroundMusic" loop>
+        <source src="love.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <!-- Lightbox JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+
+    <script>
+        // Global variables
+        let musicStarted = false;
+        let isPlaying = false;
+
+        // Configure Lightbox
+        lightbox.option({
+            'resizeDuration': 200,
+            'wrapAround': true,
+            'albumLabel': "Imagen %1 de %2",
+            'fadeDuration': 300,
+            'imageFadeDuration': 300
+        });
+
+        // Treasure chest opening functionality
+        document.getElementById('treasureChest').addEventListener('click', function() {
+            const overlay = document.getElementById('treasureOverlay');
+            const mainContent = document.getElementById('mainContent');
+            const chestTop = document.getElementById('chestTop');
+            const treasureGlow = document.getElementById('treasureGlow');
+            document.body.style.overflow = 'hidden';
+            
+            // Animate chest opening
+            chestTop.classList.add('opening');
+            treasureGlow.classList.add('active');
+            
+            // Start music when treasure opens
+            setTimeout(() => {
+                startMusic();
+            }, 500);
+            
+            // Hide overlay and show main content
+            setTimeout(() => {
+                overlay.classList.add('opened');
+                mainContent.classList.add('visible');
+                document.body.style.overflow = '';
+                // Show music modal after content is visible
+                setTimeout(() => {
+                    document.getElementById('musicModal').style.display = 'flex';
+                }, 1000);
+            }, 1200);
+        });
+
+        // Music functionality
+        function startMusic() {
+            if (musicStarted) return;
+            const bgm = document.getElementById('backgroundMusic');
+            const playPromise = bgm.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    musicStarted = true;
+                    isPlaying = true;
+                    updatePlayPauseBtn();
+                }).catch(error => {
+                    console.warn('Autoplay prevented:', error);
+                });
+            }
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetSection = btn.dataset.section;
+                
+                // Update active navigation
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Show target section
+                document.querySelectorAll('.section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(targetSection).classList.add('active');
+                
+                // Start letter animation if letter section is selected
+                if (targetSection === 'letter') {
+                    startLetterAnimation();
+                }
+            });
+        });
+
+        // Countdown functionality
+        function updateCountdowns() {
+            const now = new Date();
+            const birthday = new Date('2025-05-31T00:00:00');
+            const anniversary = new Date('2025-06-01T00:00:00');
+            
+            const birthdayElement = document.getElementById('birthdayCountdown');
+            const anniversaryElement = document.getElementById('anniversaryCountdown');
+            
+            function formatTimeRemaining(targetDate) {
+                const diff = targetDate - now;
+                if (diff <= 0) return null;
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }
+            
+            const birthdayCountdown = formatTimeRemaining(birthday);
+            const anniversaryCountdown = formatTimeRemaining(anniversary);
+            
+            if (birthdayCountdown) {
+                birthdayElement.innerHTML = birthdayCountdown;
+            } else {
+                birthdayElement.innerHTML = '¡Feliz Cumpleaños! 🎉';
+            }
+            
+            if (anniversaryCountdown) {
+                anniversaryElement.innerHTML = anniversaryCountdown;
+            } else {
+                anniversaryElement.innerHTML = '¡7 Meses Juntos! 💕';
+            }
+        }
+
+        // Messages for 20 years + 7 months
+        const messages = [
+            // 20 messages for her 20 years
+            "Nunca dejes de sonreír 😊",
+            "Eres muy hermosa 🌹",
+            "Tienes un sentido del humor increíble 🤩",
+            "Tienes el corazón más bonito 💖",
+            "Amo pasar tiempo contigo 🥰",
+            "Amo tu risa de cerdo 🐷😄",
+            "Amo tu fuerza y determinación 💪",
+            "Amo dormir contigo 🌃",
+            "Te apoyaré en todo lo que necesites 🙏",
+            "Amo tu voz cuando recien te despertaste 😴",
+            "Amo tu belleza interior y exterior ✨",
+            "Amo tus ojos 🌟",
+            "Amo tu manera única de ver el mundo 🌍",
+            "Amo cada momento que compartes conmigo 🥰",
+            "Amo tu personalidad tan especial y única 💎",
+            "Amo tu amor incondicional 💕",
+            "Amo tus regalos y tu forma de darme amor 🎁",
+            "Eres mi persona favorita 👑",
+            "Amo todos los recuerdos hermosos que tenemos 📸",
+            "Amo estos 20 años maravillosos que cumples 🎂",
+            
+            // 7 messages for 7 months together
+            "Estoy agradecido de estar contigo 💫",
+            "Estoy feliz de haberte conocido 🌸",
+            "Cada día me enamoro más de ti 💘",
+            "Construyendo sueños juntos 🏰",
+            "Trabajaré en crecer juntos 🌱",
+            "Quiero que estemos siempre unidos 🤝",
+            "Eres el amor de mi vida 👫"
+        ];
+
+        function createMessages() {
+            const grid = document.getElementById('messagesGrid');
+            messages.forEach((message, index) => {
+                const card = document.createElement('div');
+                card.className = 'message-card locked';
+                card.innerHTML = `
+                    <div style="font-size: 2em; margin-bottom: 10px;">
+                        ${index < 20 ? '🎂' : '💕'}
+                    </div>
+                    <div style="font-weight: bold; margin-bottom: 5px;">
+                        ${index < 20 ? `Año ${index + 1}` : `Mes ${index - 19}`}
+                    </div>
+                    <div style="font-size: 0.9em; opacity: 0.8;">
+                        Haz clic para revelar
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    if (!card.classList.contains('locked')) return;
+                    
+                    card.classList.remove('locked');
+                    card.classList.add('revealed');
+                    card.innerHTML = `
+                        <div style="font-size: 2em; margin-bottom: 10px;">
+                            ${index < 20 ? '🎂' : '💕'}
+                        </div>
+                        <div style="font-weight: bold; margin-bottom: 10px;">
+                            ${index < 20 ? `Año ${index + 1}` : `Mes ${index - 19}`}
+                        </div>
+                        <div style="font-size: 0.9em;">
+                            ${message}
+                        </div>
+                    `;
+                    
+                    createFloatingHeart();
+                });
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Love letter animation
+        const letterContent = `Mi querida Moza Alli,
+
+Hoy celebras 20 años de existencia, 20 años de llenar este mundo con tu luz especial. También celebramos nuestros 7 meses juntos, 7 meses de descubrir que el amor existe. A pesar de que a veces
+
+peleamos, discutimos, nos enfadamos, pero todo eso es parte de nuestro proceso de crecimiento juntos, y juntos lo superamos (eso no cambia lo que siento por ti). 
+
+Desde Colombia hasta Zanzibar, jamás imaginé una relación así, pero aquí estoy, contigo, muy agradecido con la vida por tener a alguien como tú. Amo tu noble corazón.
+
+Cada día contigo es un regalo, cada sonrisa tuya es mi motivación, cada broma me hace feliz, me hace sentir que estoy en casa, me encanta tener tanta confianza contigo, poder hacer bromas de lo que sea.
+
+Cada momento a tu lado es perfecto. Eres mi princesa, mi amor, mi todo (mi cuchi).
+
+Feliz cumpleaños, mi amor. Que este nuevo año te traiga toda la felicidad que mereces.
+
+Con todo mi amor,
+Tu novio que te ama infinitamente ❤️`;
+
+        function startLetterAnimation() {
+            const letterElement = document.getElementById('letterText');
+            letterElement.innerHTML = '';
+            
+            let index = 0;
+            const speed = 50;
+            
+            function typeWriter() {
+                if (index < letterContent.length) {
+                    letterElement.innerHTML += letterContent.charAt(index);
+                    index++;
+                    setTimeout(typeWriter, speed);
+                }
+            }
+            
+            typeWriter();
+        }
+
+        // Garden functionality
+        const flowerMemories = [
+            "Diciembre 2024: El mes que decidí aventurarme contigo 💫",
+            "Enero 2025: Ya eras especial para mí 💬",
+            "Febrero 2025: Nuestro primer San Valentín 💝",
+            "Marzo 2025: Conociendo más de tu cultura y sueños 🌍",
+            "Abril 2025: Planes para el futuro, juntos 🗺️",
+            "Mayo 2025: Nuestro amor crece 🌱",
+            "Junio 2025: Tu cumpleaños y nuestro séptimo mes 🎉"
+        ];
+
+        function createGarden() {
+            const garden = document.getElementById('gardenGrid');
+            const tooltip = document.getElementById('flowerTooltip');
+            
+            flowerMemories.forEach((memory, index) => {
+                const flower = document.createElement('div');
+                flower.className = 'flower';
+                flower.innerHTML = `
+                    <div class="flower-bloom"></div>
+                    <div class="flower-stem"></div>
+                `;
+                
+                flower.addEventListener('mouseenter', (e) => {
+                    tooltip.textContent = memory;
+                    tooltip.classList.add('show');
+                    
+                    const rect = flower.getBoundingClientRect();
+                    tooltip.style.left = rect.left + 'px';
+                    tooltip.style.top = (rect.top - 60) + 'px';
+                });
+                
+                flower.addEventListener('mouseleave', () => {
+                    tooltip.classList.remove('show');
+                });
+                
+                flower.addEventListener('click', () => {
+                    createFloatingHeart();
+                    flower.style.transform = 'scale(1.3)';
+                    setTimeout(() => {
+                        flower.style.transform = 'scale(1)';
+                    }, 300);
+                });
+                
+                garden.appendChild(flower);
+                
+                setTimeout(() => {
+                    flower.style.opacity = '1';
+                    flower.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        }
+
+        // Floating hearts
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+
+        // Music control functions
+        function updatePlayPauseBtn() {
+            const musicPlayPause = document.getElementById('musicPlayPause');
+            musicPlayPause.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Music controls setup
+            document.body.style.overflow = 'hidden';
+            const bgm = document.getElementById('backgroundMusic');
+            const musicModal = document.getElementById('musicModal');
+            const musicPlayPause = document.getElementById('musicPlayPause');
+            const musicProgress = document.getElementById('musicProgress');
+            const musicCurrent = document.getElementById('musicCurrent');
+            const musicDuration = document.getElementById('musicDuration');
+            const musicVolume = document.getElementById('musicVolume');
+            const closeMusicModal = document.getElementById('closeMusicModal');
+
+            // Floating button for reopening modal
+            const openMusicModalBtn = document.createElement('button');
+            openMusicModalBtn.innerHTML = '<i class="fas fa-music"></i>';
+            openMusicModalBtn.style.position = 'fixed';
+            openMusicModalBtn.style.bottom = '30px';
+            openMusicModalBtn.style.right = '30px';
+            openMusicModalBtn.style.background = 'rgba(255,255,255,0.2)';
+            openMusicModalBtn.style.border = 'none';
+            openMusicModalBtn.style.borderRadius = '50%';
+            openMusicModalBtn.style.padding = '14px 16px';
+            openMusicModalBtn.style.color = '#fff';
+            openMusicModalBtn.style.fontSize = '1.5em';
+            openMusicModalBtn.style.cursor = 'pointer';
+            openMusicModalBtn.style.zIndex = '1002';
+            openMusicModalBtn.style.display = 'none';
+            document.body.appendChild(openMusicModalBtn);
+
+            // Play/Pause functionality
+            musicPlayPause.addEventListener('click', () => {
+                if (bgm.paused) {
+                    bgm.play();
+                } else {
+                    bgm.pause();
+                }
+            });
+
+            bgm.addEventListener('play', () => {
+                isPlaying = true;
+                updatePlayPauseBtn();
+            });
+
+            bgm.addEventListener('pause', () => {
+                isPlaying = false;
+                updatePlayPauseBtn();
+            });
+
+            // Progress bar
+            bgm.addEventListener('timeupdate', () => {
+                musicProgress.value = (bgm.currentTime / bgm.duration) * 100 || 0;
+                musicCurrent.textContent = formatTime(bgm.currentTime);
+            });
+
+            bgm.addEventListener('loadedmetadata', () => {
+                musicDuration.textContent = formatTime(bgm.duration);
+            });
+
+            musicProgress.addEventListener('input', () => {
+                if (!isNaN(bgm.duration) && isFinite(bgm.duration)) {
+                    bgm.currentTime = (musicProgress.value / 100) * bgm.duration;
+                }
+            });
+
+            // Volume control
+            musicVolume.addEventListener('input', () => {
+                bgm.volume = musicVolume.value;
+            });
+
+            // Modal controls
+            closeMusicModal.addEventListener('click', () => {
+                musicModal.style.display = 'none';
+                openMusicModalBtn.style.display = 'block';
+            });
+
+            openMusicModalBtn.addEventListener('click', () => {
+                musicModal.style.display = 'flex';
+                openMusicModalBtn.style.display = 'none';
+            });
+
+            // Format time function
+            function formatTime(sec) {
+                if (isNaN(sec)) return '0:00';
+                const m = Math.floor(sec / 60);
+                const s = Math.floor(sec % 60).toString().padStart(2, '0');
+                return `${m}:${s}`;
+            }
+
+            // Initialize other components
+            updateCountdowns();
+            setInterval(updateCountdowns, 1000);
+            createMessages();
+            createGarden();
+
+            // Periodic floating hearts (but only after treasure is opened)
+            let heartsInterval;
+            document.getElementById('treasureChest').addEventListener('click', () => {
+                setTimeout(() => {
+                    heartsInterval = setInterval(createFloatingHeart, 3000);
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
